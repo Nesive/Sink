@@ -91,6 +91,8 @@
       "result_title": "Your short link is ready",
       "copy": "Copy",
       "copied": "Copied",
+      "copy_failed_hint": "복사에 실패했어요. 원본 링크가 여기 있어요. 눌러서 선택한 뒤 복사하세요",
+      "original_link": "원본 링크",
       "create_another": "Create another",
       "login_required": "Log in to create short links",
       "login_button": "Log in",

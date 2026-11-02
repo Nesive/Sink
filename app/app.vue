@@ -7,7 +7,7 @@ const localeHead = useLocaleHead()
 const colorMode = useColorMode()
 
 useSeoMeta({
-  title: `${title} - Link Shortener with Analytics`,
+  title,
   description,
   ogType: 'website',
   ogTitle: title,
@@ -39,8 +39,8 @@ useHead(() => ({
     },
     {
       rel: 'icon',
-      type: 'image/png',
-      href: '/icon-192.png',
+      type: 'image/svg+xml',
+      href: '/favicon.svg',
     },
     {
       rel: 'apple-touch-icon',

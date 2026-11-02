@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { AlertCircle, Check, ChevronDown, Copy, Loader2, Shuffle } from '@lucide/vue'
-import { useClipboard } from '@vueuse/core'
 import { MAX_URL_LENGTH, nanoid, SlugSchema } from '#shared/schemas/link'
 import { getAuthToken } from '@/utils/auth-token'
+import { copyText } from '@/utils/copy-text'
 
 const { t, locale } = useI18n()
 
@@ -14,12 +14,15 @@ const advancedOpen = shallowRef(false)
 const status = shallowRef<FormStatus>('idle')
 const errorMessage = shallowRef('')
 const shortLink = shallowRef('')
+const submittedLongUrl = shallowRef('')
 const loggedIn = shallowRef(false)
+const copied = shallowRef(false)
+const copyFallback = shallowRef(false)
+let copiedTimer: ReturnType<typeof setTimeout> | undefined
 
 const urlInput = useTemplateRef<HTMLInputElement>('urlInput')
 const slugInput = useTemplateRef<HTMLInputElement>('slugInput')
-
-const { copy, copied } = useClipboard({ copiedDuring: 2000 })
+const fallbackInput = useTemplateRef<HTMLInputElement>('fallbackInput')
 
 onMounted(() => {
   loggedIn.value = !!getAuthToken()
@@ -43,6 +46,29 @@ function validateLongUrl(value: string): string | null {
 function randomizeSlug() {
   slug.value = nanoid()
   slugInput.value?.focus()
+}
+
+async function handleCopy() {
+  if (!shortLink.value)
+    return
+  copyFallback.value = false
+  // Robust chain: async clipboard -> legacy execCommand -> manual prompt.
+  // A failed copy never surfaces a technical error; the user gets the
+  // original long link in a selectable field instead.
+  const outcome = await copyText(shortLink.value)
+  if (outcome === 'failed') {
+    copyFallback.value = true
+    await nextTick()
+    fallbackInput.value?.focus()
+    fallbackInput.value?.select()
+    return
+  }
+  copied.value = true
+  if (copiedTimer)
+    clearTimeout(copiedTimer)
+  copiedTimer = setTimeout(() => {
+    copied.value = false
+  }, 2000)
 }
 
 async function handleSubmit() {
@@ -84,6 +110,8 @@ async function handleSubmit() {
         : { url: longUrl.value.trim() },
     })
     shortLink.value = `${window.location.origin}/${link.slug}`
+    submittedLongUrl.value = longUrl.value.trim()
+    copyFallback.value = false
     status.value = 'success'
   }
   catch (error: unknown) {
@@ -99,6 +127,11 @@ function resetForm() {
   advancedOpen.value = false
   errorMessage.value = ''
   shortLink.value = ''
+  submittedLongUrl.value = ''
+  copyFallback.value = false
+  copied.value = false
+  if (copiedTimer)
+    clearTimeout(copiedTimer)
   status.value = 'idle'
   nextTick(() => urlInput.value?.focus())
 }
@@ -107,37 +140,39 @@ function resetForm() {
 <template>
   <div
     class="
-      w-full rounded-2xl border border-[#CDF463]/25 bg-white/4 p-5
-      shadow-[0_0_60px_rgba(205,244,99,0.12)]
+      w-full rounded-[12px] border border-black/5 bg-pan-panel p-5
+      shadow-[0_4px_8px_rgba(0,0,0,0.1)] backdrop-blur-[10px]
       sm:p-8
     "
   >
     <div class="text-center">
       <h1
         class="
-          text-2xl font-bold text-white
+          text-2xl font-bold text-neutral-900
           sm:text-3xl
         "
       >
         {{ $t('home.create.title') }}
       </h1>
-      <p class="mt-2 text-sm text-neutral-400">
+      <p class="mt-2 text-sm text-pan-muted">
         {{ $t('home.create.subtitle') }}
       </p>
     </div>
 
     <Alert
-      v-if="!loggedIn" class="mt-6 border-white/15 bg-white/3 text-neutral-200"
+      v-if="!loggedIn" class="
+        mt-6 border-pan-teal/30 bg-white/60 text-neutral-700
+      "
     >
-      <AlertCircle aria-hidden="true" class="size-4 text-[#CDF463]" />
-      <AlertTitle class="text-neutral-100">
+      <AlertCircle aria-hidden="true" class="size-4 text-pan-teal" />
+      <AlertTitle class="text-neutral-900">
         {{ $t('home.create.login_required') }}
       </AlertTitle>
       <AlertDescription class="mt-2">
         <Button
           as-child size="sm" class="
-            bg-[#CDF463] font-semibold text-black
-            hover:bg-[#CDF463]/90
+            rounded-full bg-pan-teal font-semibold text-white
+            hover:bg-pan-teal-deep
           "
         >
           <NuxtLink to="/dashboard/login">
@@ -172,9 +207,10 @@ function resetForm() {
               :aria-invalid="status === 'error'"
               :disabled="status === 'submitting' || !loggedIn"
               class="
-                h-12 flex-1 border-white/15 bg-black/40 text-base text-white
-                placeholder:text-neutral-500
-                focus-visible:border-[#CDF463]/60 focus-visible:ring-[#CDF463]
+                h-12 flex-1 rounded-[16px] border-transparent bg-pan-surface
+                text-base text-neutral-900
+                placeholder:text-neutral-400
+                focus-visible:border-pan-teal/60 focus-visible:ring-pan-teal
               "
             />
             <Button
@@ -182,8 +218,8 @@ function resetForm() {
               :disabled="status === 'submitting' || !loggedIn"
               :aria-busy="status === 'submitting'"
               class="
-                h-12 w-full bg-[#CDF463] font-semibold text-black
-                hover:bg-[#CDF463]/90
+                h-12 w-full rounded-full bg-pan-teal font-semibold text-white
+                hover:bg-pan-teal-deep
                 sm:w-auto
               "
             >
@@ -202,8 +238,8 @@ function resetForm() {
           <button
             type="button"
             class="
-              flex items-center gap-1 text-sm text-neutral-400 transition-colors
-              hover:text-white
+              flex items-center gap-1 text-sm text-neutral-500 transition-colors
+              hover:text-neutral-900
             "
             :aria-expanded="advancedOpen"
           >
@@ -218,7 +254,7 @@ function resetForm() {
         <CollapsibleContent class="pt-4">
           <FieldGroup>
             <Field>
-              <FieldLabel for="home-create-slug" class="text-neutral-300">
+              <FieldLabel for="home-create-slug" class="text-neutral-700">
                 {{ $t('home.create.slug_label') }}
               </FieldLabel>
               <div class="flex gap-3">
@@ -233,10 +269,10 @@ function resetForm() {
                   :placeholder="$t('home.create.slug_placeholder')"
                   :disabled="status === 'submitting' || !loggedIn"
                   class="
-                    h-11 flex-1 border-white/15 bg-black/40 text-white
-                    placeholder:text-neutral-500
-                    focus-visible:border-[#CDF463]/60
-                    focus-visible:ring-[#CDF463]
+                    h-11 flex-1 rounded-[16px] border-transparent bg-pan-surface
+                    text-neutral-900
+                    placeholder:text-neutral-400
+                    focus-visible:border-pan-teal/60 focus-visible:ring-pan-teal
                   "
                 />
                 <Button
@@ -244,9 +280,9 @@ function resetForm() {
                   variant="outline"
                   :disabled="status === 'submitting' || !loggedIn"
                   class="
-                    h-11 shrink-0 border-white/15 bg-transparent
-                    text-neutral-200
-                    hover:bg-white/10 hover:text-white
+                    h-11 shrink-0 rounded-full border-black/10 bg-transparent
+                    text-neutral-700
+                    hover:bg-black/5 hover:text-neutral-900
                   "
                   @click="randomizeSlug"
                 >
@@ -254,7 +290,7 @@ function resetForm() {
                   {{ $t('home.create.random_slug') }}
                 </Button>
               </div>
-              <p class="mt-2 text-xs text-neutral-500">
+              <p class="mt-2 text-xs text-neutral-400">
                 {{ $t('home.create.slug_hint') }}
               </p>
             </Field>
@@ -270,9 +306,9 @@ function resetForm() {
 
     <div
       v-if="status === 'success' && shortLink"
-      class="mt-6 rounded-xl border border-[#CDF463]/30 bg-black/40 p-4"
+      class="mt-6 rounded-[12px] border border-black/5 bg-white/60 p-4"
     >
-      <p class="text-xs font-medium tracking-wide text-neutral-400 uppercase">
+      <p class="text-xs font-medium tracking-wide text-neutral-500 uppercase">
         {{ $t('home.create.result_title') }}
       </p>
       <div
@@ -286,7 +322,7 @@ function resetForm() {
           target="_blank"
           rel="noopener noreferrer"
           class="
-            min-w-0 flex-1 font-mono text-base break-all text-[#CDF463]
+            min-w-0 flex-1 font-mono text-base break-all text-pan-teal
             hover:underline
           "
         >{{ shortLink }}</a>
@@ -295,10 +331,10 @@ function resetForm() {
             type="button"
             variant="outline"
             class="
-              border-[#CDF463]/40 text-[#CDF463]
-              hover:bg-[#CDF463]/10 hover:text-[#CDF463]
+              rounded-full border-pan-teal/40 text-pan-teal
+              hover:bg-pan-teal/10 hover:text-pan-teal
             "
-            @click="copy(shortLink)"
+            @click="handleCopy"
           >
             <Check v-if="copied" aria-hidden="true" class="size-4" />
             <Copy v-else aria-hidden="true" class="size-4" />
@@ -308,14 +344,43 @@ function resetForm() {
             type="button"
             variant="ghost"
             class="
-              text-neutral-300
-              hover:bg-white/10 hover:text-white
+              rounded-full text-neutral-500
+              hover:bg-black/5 hover:text-neutral-900
             "
             @click="resetForm"
           >
             {{ $t('home.create.create_another') }}
           </Button>
         </div>
+      </div>
+      <div
+        v-if="copyFallback" class="
+          mt-4 rounded-[12px] border border-black/5 bg-white/60 p-4
+        "
+      >
+        <p class="text-sm text-neutral-600">
+          {{ $t('home.create.copy_failed_hint') }}
+        </p>
+        <label
+          for="home-create-fallback" class="
+            mt-3 block text-xs font-medium text-neutral-500
+          "
+        >
+          {{ $t('home.create.original_link') }}
+        </label>
+        <input
+          id="home-create-fallback"
+          ref="fallbackInput"
+          type="text"
+          readonly
+          :value="submittedLongUrl"
+          class="
+            mt-1 h-11 w-full rounded-[16px] border-transparent bg-pan-surface
+            px-3 text-sm text-neutral-900
+            focus-visible:border-pan-teal/60 focus-visible:outline-none
+          "
+          @focus="($event.target as HTMLInputElement).select()"
+        >
       </div>
     </div>
   </div>

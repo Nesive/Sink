@@ -4,6 +4,21 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Unified light theme tokens, taken from the FlareDrive-R2 frontend
+ * (pan-webdav-auth/src): the font stack from assets/main.css, the primary
+ * teal from the upload/create buttons in main.css, the translucent panel
+ * treatment from assets/App.vue .file-list-container, and the input surface
+ * from the search input in main.css. The hover teal is the primary teal
+ * darkened one step. */
+@theme {
+  --color-pan-teal: rgb(57 144 155);
+  --color-pan-teal-deep: rgb(45 115 124);
+  --color-pan-panel: rgb(255 255 255 / 0.5);
+  --color-pan-surface: whitesmoke;
+  --color-pan-muted: dimgray;
+  --font-pan: "寒蝉半圆体", -apple-system, BlinkMacSystemFont, "Segoe UI Adjusted", "Segoe UI", "Liberation Sans", sans-serif;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

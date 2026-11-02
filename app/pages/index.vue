@@ -1,5 +1,10 @@
 <template>
-  <div class="flex flex-1 flex-col bg-[#0B100B] text-neutral-100">
+  <div
+    class="
+      flex flex-1 flex-col bg-[linear-gradient(180deg,#ffffff_0%,#f5f5f5_100%)]
+      font-pan text-neutral-900
+    "
+  >
     <div
       class="
         mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center px-4 py-10
@@ -11,8 +16,8 @@
           as-child
           variant="outline"
           class="
-            border-white/15 bg-transparent text-neutral-200
-            hover:bg-white/10 hover:text-white
+            rounded-full border-pan-teal/40 bg-white/60 text-pan-teal
+            hover:bg-pan-teal/10 hover:text-pan-teal
           "
         >
           <NuxtLink to="/dashboard">

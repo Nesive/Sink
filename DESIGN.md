@@ -69,11 +69,18 @@ colors:
   dark-sidebar-accent-foreground: "oklch(0.985 0 0)"
   dark-sidebar-border: "oklch(1 0 0 / 10%)"
   dark-sidebar-ring: "oklch(0.552 0.016 285.938)"
+  pan-teal: "rgb(57 144 155)"
+  pan-teal-deep: "rgb(45 115 124)"
+  pan-panel: "rgb(255 255 255 / 0.5)"
+  pan-surface: "whitesmoke"
+  pan-muted: "dimgray"
 typography:
   sans:
     fontFamily: "IBM Plex Sans, sans-serif"
   heading:
     fontFamily: "IBM Plex Sans, sans-serif"
+  pan:
+    fontFamily: "寒蝉半圆体, -apple-system, BlinkMacSystemFont, Segoe UI Adjusted, Segoe UI, Liberation Sans, sans-serif"
 rounded:
   base: 0.625rem
   lg: 0.625rem
@@ -102,6 +109,8 @@ This file is a derived summary for design-aware agents. If it conflicts with `ap
 ## Colors
 
 The unprefixed tokens reproduce the semantic roles in `:root`; `dark-*` tokens flatten the corresponding `.dark` values. Always use roles as intended and keep each background paired with its foreground. The green `chart-1` through `chart-5` sequence is for charts only. Use `success` for positive status and completion indicators, `ring` for focus emphasis, and `destructive` for destructive or invalid states, including their dark-mode counterparts.
+
+The public homepage uses a separate light theme taken from the FlareDrive-R2 frontend: `pan-teal` for primary actions and links, `pan-teal-deep` on hover, `pan-panel` (translucent white with blur) for cards, `pan-surface` for inputs, `pan-muted` for secondary text, and the `pan` font family. These tokens live in `app/assets/css/tailwind.css` and apply to the homepage set only; the dashboard keeps the semantic roles above.
 
 ## Typography
 

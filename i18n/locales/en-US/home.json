@@ -91,6 +91,8 @@
       "result_title": "Your short link is ready",
       "copy": "Copy",
       "copied": "Copied",
+      "copy_failed_hint": "Copy didn't work — here is the original link, tap to select and copy it",
+      "original_link": "Original link",
       "create_another": "Create another",
       "login_required": "Log in to create short links",
       "login_button": "Log in",

@@ -27,7 +27,7 @@ function closeMobileMenu() {
 </script>
 
 <template>
-  <div class="flex min-h-svh flex-col overflow-x-clip">
+  <div class="flex min-h-svh flex-col overflow-x-clip font-pan">
     <a
       href="#main-content"
       class="
@@ -44,8 +44,8 @@ function closeMobileMenu() {
     <header>
       <div
         class="
-          fixed z-20 w-full border-b bg-background/80
-          pt-[env(safe-area-inset-top)] text-foreground backdrop-blur-3xl
+          fixed z-20 w-full border-b border-black/5 bg-pan-panel
+          pt-[env(safe-area-inset-top)] text-neutral-900 backdrop-blur-[10px]
         "
       >
         <div class="mx-auto max-w-6xl px-6">
@@ -63,11 +63,11 @@ function closeMobileMenu() {
             >
               <span class="flex size-8 items-center justify-center rounded-full">
                 <img
-                  src="/sink.png"
+                  src="/favicon.svg"
                   :alt="`${title} Logo`"
                   width="32"
                   height="32"
-                  class="size-full rounded-full"
+                  class="size-full"
                 >
               </span>
               <span class="text-xl font-black">{{ title }}</span>
@@ -240,8 +240,8 @@ function closeMobileMenu() {
     <!-- Footer -->
     <footer
       class="
-        border-t bg-background pt-8 pb-[calc(2rem+env(safe-area-inset-bottom))]
-        text-foreground
+        border-t border-black/5 bg-white/60 pt-8
+        pb-[calc(2rem+env(safe-area-inset-bottom))] text-neutral-900
       "
     >
       <div class="mx-auto max-w-6xl px-6">
@@ -262,11 +262,11 @@ function closeMobileMenu() {
                 class="flex size-8 items-center justify-center rounded-full"
               >
                 <img
-                  src="/sink.png"
+                  src="/favicon.svg"
                   :alt="`${title} Logo`"
                   width="32"
                   height="32"
-                  class="size-full rounded-full"
+                  class="size-full"
                 >
               </span>
               <span class="text-xl font-black">{{ title }}</span>
