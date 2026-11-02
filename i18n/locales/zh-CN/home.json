@@ -75,6 +75,30 @@
     "testimonials": {
       "title": "用户好评",
       "subtitle": "看看开发者们怎么说"
+    },
+    "create": {
+      "title": "把长链变短链",
+      "subtitle": "粘贴链接，一键生成，打开即用",
+      "url_label": "长链接",
+      "url_placeholder": "粘贴长链接，例如 https://example.com/very/long/path",
+      "generate": "生成短链",
+      "generating": "生成中…",
+      "advanced": "高级",
+      "slug_label": "自定义短链",
+      "slug_placeholder": "留空则自动生成",
+      "slug_hint": "字母与数字，可用连字符分隔",
+      "random_slug": "随机",
+      "result_title": "你的短链已生成",
+      "copy": "复制",
+      "copied": "已复制",
+      "create_another": "再建一条",
+      "login_required": "登录后即可创建短链",
+      "login_button": "去登录",
+      "error_empty": "请先粘贴一条长链接",
+      "error_invalid": "这条链接看起来不对，请检查后重试",
+      "error_too_long": "链接太长了（{max} 字符以内）",
+      "error_slug_invalid": "自定义短链格式不对，请换一个",
+      "error_failed": "服务开小差了，请稍后重试"
     }
   }
 }

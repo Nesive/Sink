@@ -75,6 +75,30 @@
     "testimonials": {
       "title": "Amato dagli Utenti",
       "subtitle": "Scopri cosa dicono gli sviluppatori su Sink"
+    },
+    "create": {
+      "title": "Turn a long link into a short one",
+      "subtitle": "Paste a link, generate it in one click, ready to use",
+      "url_label": "Long URL",
+      "url_placeholder": "Paste a long URL, e.g. https://example.com/very/long/path",
+      "generate": "Generate short link",
+      "generating": "Generating...",
+      "advanced": "Advanced",
+      "slug_label": "Custom slug",
+      "slug_placeholder": "Leave empty to generate automatically",
+      "slug_hint": "Letters and numbers, hyphen-separated",
+      "random_slug": "Random",
+      "result_title": "Your short link is ready",
+      "copy": "Copy",
+      "copied": "Copied",
+      "create_another": "Create another",
+      "login_required": "Log in to create short links",
+      "login_button": "Log in",
+      "error_empty": "Paste a long link first",
+      "error_invalid": "This link looks invalid, please check and try again",
+      "error_too_long": "This link is too long (within {max} characters)",
+      "error_slug_invalid": "This custom slug format is invalid, please try another",
+      "error_failed": "Something went wrong, please try again later"
     }
   }
 }
